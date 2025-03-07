@@ -14,7 +14,8 @@ dj-database-url==2.1.0
 python-dotenv==1.0.0
 drf-yasg==1.21.9
 setuptools
-numpy==2.0.0
-scikit-learn-1.6.1 
-scipy-1.15.2
+numpy
+scikit-learn
+scipy
+
 
