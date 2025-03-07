@@ -120,7 +120,7 @@ This application is deployed on Railway, a modern platform for deploying web app
 
 ### Live Application
 
-The application is accessible at: [https://movie-recommendation-production.up.railway.app/](https://movie-recommendation-production.up.railway.app/)
+The application is accessible at: [https://movie-recommendation-production.up.railway.app/](movierecommendation-production-5b93.up.railway.app)
 
 ### Deployment Setup
 
