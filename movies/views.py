@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-
+from .recommendation import MovieRecommender
+from .serializers import MovieSerializer
 from .models import Movie, UserProfile
 from .serializers import MovieSerializer, UserSerializer, UserProfileSerializer
 from . import tmdb_api
@@ -115,3 +116,32 @@ class FavoriteMovieView(APIView):
                 {"error": "Movie not in favorites"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
+class MovieRecommendationView(APIView):
+    """
+    API endpoint to get personalized movie recommendations.
+    """
+    
+    def get(self, request, format=None):
+        """
+        Get personalized recommendations for the current user.
+        """
+        # Get user ID from request
+        user_id = request.user.id
+        
+        # Get number of recommendations (default: 10)
+        try:
+            count = int(request.query_params.get('count', 10))
+        except ValueError:
+            count = 10
+        
+        # Initialize recommender and get recommendations
+        recommender = MovieRecommender()
+        recommended_movies = recommender.get_recommendations(user_id, count)
+        
+        # Serialize the recommendations
+        serializer = MovieSerializer(recommended_movies, many=True)
+        
+        return Response({
+            'count': len(recommended_movies),
+            'recommendations': serializer.data
+        })
