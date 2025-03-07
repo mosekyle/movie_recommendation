@@ -7,4 +7,14 @@ djangorestframework-simplejwt==5.3.1
 requests==2.31.0
 redis==5.0.1
 django-redis==5.4.0
+django-filter==23.2
+gunicorn==21.2.0
+whitenoise==6.5.0
+dj-database-url==2.1.0
+python-dotenv==1.0.0
 drf-yasg==1.21.9
+setuptools
+numpy-2.2.3
+scikit-learn-1.6.1 
+scipy-1.15.2
+
