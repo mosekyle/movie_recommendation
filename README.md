@@ -111,3 +111,68 @@ Run the test suite:
 ```bash
 python manage.py test
 ```
+
+
+
+## Deployment
+
+This application is deployed on Railway, a modern platform for deploying web applications.
+
+### Live Application
+
+The application is accessible at: [https://movie-recommendation-production.up.railway.app/](https://movie-recommendation-production.up.railway.app/)
+
+### Deployment Setup
+
+#### Prerequisites
+- A Railway account
+- Git repository with your application code
+- Python 3.8+ and Django
+
+#### Deployment Steps
+
+1. **Connect your repository to Railway**
+   - Log in to your Railway account
+   - Create a new project
+   - Select "Deploy from GitHub repo"
+   - Connect to your GitHub account and select this repository
+
+2. **Configure the environment variables**
+   - In your Railway project, navigate to the Variables tab
+   - Add the following environment variables:
+     ```
+     DEBUG=False
+     SECRET_KEY=your_production_secret_key
+     DATABASE_URL=postgresql://username:password@host:port/database
+     ALLOWED_HOSTS=.railway.app,your-custom-domain.com
+     ```
+
+3. **Database setup**
+   - Add a PostgreSQL database service to your Railway project
+   - Railway will automatically provide the DATABASE_URL environment variable
+
+4. **Deploy the application**
+   - Railway will automatically deploy when you push to your main/master branch
+   - You can also trigger manual deployments from the Railway dashboard
+
+5. **Run migrations**
+   - From the Railway dashboard, open a shell for your service
+   - Run `python manage.py migrate` to set up the database schema
+
+### Performance Optimization
+
+- Static files are served via Railway's CDN
+- Database queries are optimized with Django's select_related and prefetch_related
+- Pagination is implemented for movie listings to improve performance with large datasets
+
+### Monitoring
+
+- Application logs can be viewed in the Railway dashboard
+- Error tracking is implemented using Django's built-in logging
+
+### CI/CD
+
+The deployment process is automated with:
+- Automatic deployments triggered by GitHub pushes
+- Pre-deployment checks to ensure code quality
+- Database migrations applied automatically during deployment
