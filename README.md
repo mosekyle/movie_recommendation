@@ -52,7 +52,7 @@ A robust Django REST API backend for a movie recommendation application. This ba
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mosekyle/movie-recommender.git
+   git clone https://github.com/mosekyle/movie_recommendation.git
    cd movie_recommendation
    ```
 
