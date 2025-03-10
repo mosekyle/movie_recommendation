@@ -94,11 +94,11 @@ WSGI_APPLICATION = 'movie_recommendation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('movie'),
-        'USER': config('postgres'),
-        'PASSWORD': config('8848'),
-        'HOST': config('localhost'),
-        'PORT': config('5432'),
+        'NAME': ('movie'),
+        'USER': ('postgres'),
+        'PASSWORD': ('8848'),
+        'HOST': ('localhost'),
+        'PORT': ('5432'),
     }
 }
 
