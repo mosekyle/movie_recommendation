@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u&wys$rjzl-@cyo)x4ln_^piwszxwj$+_560s78j(&3_1-mbq+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = config('SECRET_KEY')
+ALLOWED_HOSTS = [.railway.app,localhost,127.0.0.1
+]
 
 
 # Application definition
@@ -93,11 +95,11 @@ WSGI_APPLICATION = 'movie_recommendation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'movie',
-        'USER': 'postgres',
-        'PASSWORD': '8848',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('movie'),
+        'USER': config('postgres'),
+        'PASSWORD': config('8848'),
+        'HOST': config('localhost'),
+        'PORT': config('5432'),
     }
 }
 
