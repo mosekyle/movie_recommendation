@@ -23,6 +23,7 @@ services:
 
   web:
     build: .
+    container_name: movie_recommendation-web
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app

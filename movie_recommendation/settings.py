@@ -13,9 +13,11 @@ import os
 from pathlib import Path
 from decouple import config
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# settings.py
+SECURE_SSL_REDIRECT = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -25,6 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 SECRET_KEY = config('SECRET_KEY')
 ALLOWED_HOSTS = ["railway.app", "localhost", "127.0.0.1"]
 
@@ -97,7 +100,7 @@ DATABASES = {
         'NAME': ('movie'),
         'USER': ('postgres'),
         'PASSWORD': ('8848'),
-        'HOST': ('localhost'),
+        'HOST': ('db'),
         'PORT': ('5432'),
     }
 }
@@ -170,7 +173,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # In production, specify exact origins
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://movie_recommendation-redis-1:6379/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }

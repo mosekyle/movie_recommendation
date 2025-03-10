@@ -41,7 +41,7 @@ class MovieAPITests(TestCase):
             vote_average=8.4
         )
 
-    @patch('api.tmdb_api.get_trending_movies')
+    @patch('movies.tmdb_api.get_trending_movies')
     def test_trending_movies_endpoint(self, mock_get_trending):
         # Mock the API response
         mock_get_trending.return_value = {
@@ -57,7 +57,7 @@ class MovieAPITests(TestCase):
         self.assertEqual(len(response.data['results']), 1)
         mock_get_trending.assert_called_once()
 
-    @patch('api.tmdb_api.search_movies')
+    @patch('movies.tmdb_api.search_movies')
     def test_search_movies_endpoint(self, mock_search):
         # Mock the API response
         mock_search.return_value = {
@@ -81,8 +81,11 @@ class FavoriteMovieTests(TestCase):
             email='test@example.com',
             password='testpass123'
         )
-        self.client.force_authenticate(user=self.user)
+        # Ensure UserProfile is created manually
+        self.profile = UserProfile.objects.create(user=self.user)
         
+        self.client.force_authenticate(user=self.user)
+            
         # Create a test movie
         self.movie = Movie.objects.create(
             tmdb_id=550,
@@ -94,7 +97,8 @@ class FavoriteMovieTests(TestCase):
         
         self.profile = UserProfile.objects.get(user=self.user)
 
-    @patch('api.tmdb_api.get_movie_details')
+    @patch('movies.tmdb_api.get_trending_movies')
+
     def test_add_favorite_movie(self, mock_get_details):
         # Mock the API response
         mock_get_details.return_value = {

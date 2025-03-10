@@ -4,9 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from .recommendation import MovieRecommender
-from .serializers import MovieSerializer
-from .models import Movie, UserProfile
-from .serializers import MovieSerializer, UserSerializer, UserProfileSerializer
+from .serializers import MovieSerializer, UserSerializer, FavoriteMovieSerializer
+from .models import Movie, FavoriteMovie
 from . import tmdb_api
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -66,20 +65,13 @@ class UserRegistrationView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    
-    def get(self, request):
-        profile = get_object_or_404(UserProfile, user=request.user)
-        serializer = UserProfileSerializer(profile)
-        return Response(serializer.data)
-
 class FavoriteMovieView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request, movie_id):
-        profile = get_object_or_404(UserProfile, user=request.user)
-        
+        """
+        Add a movie to the user's favorites.
+        """
         # Get movie details from TMDb
         movie_data = tmdb_api.get_movie_details(movie_id)
         
@@ -97,29 +89,36 @@ class FavoriteMovieView(APIView):
                 'vote_average': movie_data.get('vote_average', 0.0)
             }
         )
+
+        # Create a favorite movie record
+        favorite, created = FavoriteMovie.objects.get_or_create(user=request.user, movie=movie)
         
-        # Add to favorites
-        profile.favorite_movies.add(movie)
-        
-        return Response({"message": f"Added {movie.title} to favorites"})
+        if created:
+            return Response({"message": f"Added {movie.title} to favorites"}, status=status.HTTP_201_CREATED)
+        return Response({"message": f"{movie.title} is already in favorites"}, status=status.HTTP_200_OK)
     
     def delete(self, request, movie_id):
-        profile = get_object_or_404(UserProfile, user=request.user)
+        """
+        Remove a movie from the user's favorites.
+        """
         movie = get_object_or_404(Movie, tmdb_id=movie_id)
+        favorite = FavoriteMovie.objects.filter(user=request.user, movie=movie)
         
-        # Remove from favorites
-        if movie in profile.favorite_movies.all():
-            profile.favorite_movies.remove(movie)
-            return Response({"message": f"Removed {movie.title} from favorites"})
+        if favorite.exists():
+            favorite.delete()
+            return Response({"message": f"Removed {movie.title} from favorites"}, status=status.HTTP_200_OK)
         else:
             return Response(
                 {"error": "Movie not in favorites"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
+
 class MovieRecommendationView(APIView):
     """
     API endpoint to get personalized movie recommendations.
     """
+    
+    permission_classes = [permissions.IsAuthenticated]
     
     def get(self, request, format=None):
         """

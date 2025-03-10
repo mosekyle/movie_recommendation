@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Movie, UserProfile
+from .models import Movie, FavoriteMovie  
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,19 +15,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password']
     
     def create(self, validated_data):
+        """Create a new user"""
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
             password=validated_data['password']
         )
-        UserProfile.objects.create(user=user)
-        return user
+        return user 
+class FavoriteMovieSerializer(serializers.ModelSerializer):
+    """Serializer for user's favorite movies"""
+    user = serializers.StringRelatedField()
+    movie = MovieSerializer()
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    email = serializers.EmailField(source='user.email', read_only=True)
-    favorite_movies = MovieSerializer(many=True, read_only=True)
-    
     class Meta:
-        model = UserProfile
-        fields = ['id', 'username', 'email', 'favorite_movies']
+        model = FavoriteMovie
+        fields = ['id', 'user', 'movie', 'added_at']

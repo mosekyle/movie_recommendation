@@ -1,7 +1,7 @@
 # movies/recommendation.py
 
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity # type: ignore
 from django.db.models import Avg, Count
 from .models import Movie, Rating, Genre
 

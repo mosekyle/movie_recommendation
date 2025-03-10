@@ -1,6 +1,7 @@
+from logging import config
 import requests
 
-TMDB_API_KEY = '6ed67245ffacbb8bddd71ffdaffe482d'
+TMDB_API_KEY = config('TMDB_API_KEY')
 BASE_URL = 'https://api.themoviedb.org/3'
 
 def fetch_trending_movies():
