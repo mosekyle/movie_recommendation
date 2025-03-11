@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import Movie, FavoriteMovie
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -18,19 +19,21 @@ class UserSerializer(serializers.ModelSerializer):
         min_length=8, 
         style={'input_type': 'password'}
     )
+    email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password']
     
+    def validate_password(self, value):
+        """Ensure password meets security standards"""
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+        return value
+
     def create(self, validated_data):
         """Create a new user with hashed password"""
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email', ''),
-            password=validated_data['password']
-        )
-        return user
+        return User.objects.create_user(**validated_data)
 
 
 class FavoriteMovieSerializer(serializers.ModelSerializer):
@@ -49,5 +52,6 @@ class FavoriteMovieSerializer(serializers.ModelSerializer):
         if not request or not request.user.is_authenticated:
             raise serializers.ValidationError("Authentication required")
         
+        # Associate the movie with the authenticated user
         validated_data['user'] = request.user
         return super().create(validated_data)
